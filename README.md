@@ -6,6 +6,6 @@
 
 #### Controls
 
-**c** - hide color pickers
+**shift + c** - hide color pickers
 
-**r** - Reset all colors
+**shift + r** - Reset all colors

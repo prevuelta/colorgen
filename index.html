@@ -31,7 +31,7 @@
             top: 0;
         }
 
-        #wrapper.hide-controls .controls {
+        #wrapper.hide-controls input {
             display: none;
         }
 
@@ -111,10 +111,16 @@
 
         if (palette) {
             palette = JSON.parse(palette);
+            load(palette);
+        }
+
+        function load (palette) {
             var i = 0;
             for (var swatch of swatches) {
-                swatch.querySelector('input').value = palette[i];
+                var input = swatch.querySelector('input');
+                input.value = palette[i];
                 var color = '#'+palette[i];
+                input.style = null;
                 swatch.style.background = color;
                 colorInverse(swatch, color);
                 i++;
@@ -142,16 +148,23 @@
             localStorage.setItem('palette', JSON.stringify(palette));
         }
 
+        function reset () {
+            load(new Array(6).fill('f4f4f4'));
+            save();
+        }
+
         document.addEventListener('keydown', function (e) {
-            switch(e.keyCode) {
-                case 67:
-                    toggleControls();
+            if (e.shiftKey) {
+                switch(e.keyCode) {
+                    case 67:
+                        toggleControls();
                     break;
-                case 82:
-                    reset();
-                break;
-                default:
+                    case 82:
+                        reset();
                     break;
+                    default:
+                        break;
+                }
             }
         })
 
