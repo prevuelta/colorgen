@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Color Palette</title>
+    <style>
+        body {
+            background: #f4f4f4;
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        #wrapper,
+        #wrapper-invert {
+            padding: 5%;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-around;
+            height: 50%;
+            position: fixed;
+            left: 0;
+            right: 0;
+        }
+
+        #wrapper {
+            top: 0;
+        }
+
+        #wrapper.hide-controls .controls {
+            display: none;
+        }
+
+        #wrapper-invert {
+            background: #222222;
+            bottom: 0;
+        }
+
+        #wrapper-invert .input {
+            display: none;
+        }
+
+        .swatch {
+            min-height: 200px;
+            height: 100%;
+            margin: 0 40px 0 0;
+            background: white;
+            flex: 1 1 32%;
+            position: relative;
+        }
+        .swatch:last-child {
+            margin-right: 0;
+        }
+
+        input {
+            margin-top: 10px;
+            padding: 5px;
+            border: none;
+            text-indent: 10px;
+            display: block;
+            background: none;
+            text-transform: uppercase;
+            width: 100%;
+            font-size: 1.1em;
+            letter-spacing: 0.05em;
+            font-family: monospace;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div id="wrapper">
+            <div class="swatch">
+                <input class="jscolor {onFineChange:'update(this)'}" value="f4f4f4" />
+            </div>
+            <div class="swatch">
+                <input class="jscolor {onFineChange:'update(this)'}" value="f4f4f4" />
+            </div>
+            <div class="swatch">
+                <input class="jscolor {onFineChange:'update(this)'}" value="f4f4f4" />
+            </div>
+            <div class="swatch">
+                <input class="jscolor {onFineChange:'update(this)'}" value="f4f4f4" />
+            </div>
+            <div class="swatch">
+                <input class="jscolor {onFineChange:'update(this)'}" value="f4f4f4" />
+            </div>
+            <div class="swatch">
+                <input class="jscolor {onFineChange:'update(this)'}" value="f4f4f4" />
+            </div>
+        </div>
+        <div id="wrapper-invert">
+            <div class="swatch"></div>
+            <div class="swatch"></div>
+            <div class="swatch"></div>
+            <div class="swatch"></div>
+            <div class="swatch"></div>
+            <div class="swatch"></div>
+        </div>
+    </main>
+    <script>
+        var wrapper = document.getElementById('wrapper');
+        var wrapperInvert = document.getElementById('wrapper-invert');
+        var swatches = document.querySelectorAll('#wrapper .swatch');
+        var palette = localStorage.getItem('palette');
+
+        if (palette) {
+            palette = JSON.parse(palette);
+            var i = 0;
+            for (var swatch of swatches) {
+                swatch.querySelector('input').value = palette[i];
+                var color = '#'+palette[i];
+                swatch.style.background = color;
+                colorInverse(swatch, color);
+                i++;
+            }
+        }
+
+        function colorInverse (node, color) {
+            var i = Array.prototype.indexOf.call(wrapper.children, node);
+            wrapperInvert.children[i].style.background = color;
+        }
+
+        function toggleControls () {
+            wrapper.classList.toggle('hide-controls');
+        }
+
+        function update (picker) {
+            var color = picker.toHEXString();
+            picker.valueElement.parentElement.style.background = color;
+            colorInverse(picker.valueElement.parentElement, color)
+            save();
+        }
+
+        function save () {
+            let palette = [].slice.call(swatches).map(s => s.querySelector('input').value);
+            localStorage.setItem('palette', JSON.stringify(palette));
+        }
+
+        document.addEventListener('keydown', function (e) {
+            switch(e.keyCode) {
+                case 67:
+                    toggleControls();
+                    break;
+                case 82:
+                    reset();
+                break;
+                default:
+                    break;
+            }
+        })
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.js"></script>
+</body>
+</html>
